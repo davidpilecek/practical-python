@@ -4,8 +4,9 @@
 
 import csv
 from pprint import pprint
+from collections import Counter
 
-path_portfolio = r"Work/Data/portfoliodate.csv"
+path_portfolio = r"C:\Users\David\Desktop\practical-python\Work\Data\portfolio.csv"
 path_prices = r"Work/Data/prices.csv"
 
 def read_portfolio(filename):
@@ -72,11 +73,15 @@ def make_report(portfolio, prices):
         report.append(r)
     return report
 
-
 if __name__ == "__main__":
     portfolio = read_portfolio(path_portfolio)
-    prices = read_prices(path_prices)
-    report = make_report(portfolio, prices)
-    for row in portfolio:
-        print(row)
-   
+    portfolio2 = read_portfolio(r"C:\Users\David\Desktop\practical-python\Work\Data\portfolio2.csv")
+    holdings = Counter()
+    holdings2 = Counter()
+
+    for s in portfolio2:
+        holdings2[s['name']] += int(s['shares'])
+
+    for s in portfolio:
+        holdings[s['name']] += int(s['shares'])
+    print(holdings2 + holdings)
