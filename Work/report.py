@@ -17,9 +17,9 @@ def read_portfolio(filename):
         rows = csv.reader(f)
         header = next(rows)
         for row_nr, row in enumerate(rows):
-            #row.split(",")
             stock_dict = dict(zip(header, row))
-            
+            stock_dict['shares'] = int(stock_dict['shares'])
+            stock_dict['price'] = float(stock_dict['price'])
             portfolio.append(stock_dict)
 
         return portfolio
@@ -62,6 +62,7 @@ def make_report(portfolio, prices):
     report = []
 
     for stock in portfolio:
+
         name = stock["name"]
         past_price = float(stock['price'])
         shares = int(stock["shares"])
@@ -75,13 +76,17 @@ def make_report(portfolio, prices):
 
 if __name__ == "__main__":
     portfolio = read_portfolio(path_portfolio)
-    portfolio2 = read_portfolio(r"C:\Users\David\Desktop\practical-python\Work\Data\portfolio2.csv")
-    holdings = Counter()
-    holdings2 = Counter()
+   
+    types = [str, float, str, str, float, float, float, float, int]
 
-    for s in portfolio2:
-        holdings2[s['name']] += int(s['shares'])
+    f = open(r"C:\Users\David\Desktop\practical-python\Work\Data\dowstocks.csv")
+    rows = csv.reader(f)
+    header = next(rows)
+    row = next(rows)
 
-    for s in portfolio:
-        holdings[s['name']] += int(s['shares'])
-    print(holdings2 + holdings)
+    converted = [func(val) for func,val in zip(types, row)]
+    record = dict(zip(header, converted))
+    #record["date"] = record["date"].split('/')
+    record["date"] = tuple([int(d) for d in record["date"].split('/')])
+
+    print(record["date"])
