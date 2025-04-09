@@ -7,12 +7,11 @@ from pprint import pprint
 from collections import Counter
 
 path_portfolio = r"C:\Users\David\Desktop\practical-python\Work\Data\portfolio.csv"
-path_prices = r"Work/Data/prices.csv"
+path_prices = r"C:\Users\David\Desktop\practical-python\Work\Data\prices.csv"
 
 def read_portfolio(filename):
     '''Returns a portfolio as a list, made from a file'''
     portfolio = []
-    
     with open(filename, "rt") as f:
         rows = csv.reader(f)
         header = next(rows)
@@ -57,8 +56,9 @@ def calc_gain(portfolio, prices):
     print(gain)
 
 def make_report(portfolio, prices):
-    #print(f"Name {"":<5} Shares {"":>3} Price {"":>4} Change {"":<10}")
-    #print("---------- ---------- ---------- -------")
+    '''
+    Creates a report of state of portfolio according to current prices.
+    '''
     report = []
 
     for stock in portfolio:
@@ -69,24 +69,43 @@ def make_report(portfolio, prices):
         curr_price = prices[name]
         change = curr_price - past_price
         
-        print(f"{name:<10s} {shares:<10d} {curr_price:<10.2f} {change:<10.2f}")
+        #print(f"{name:<10s} {shares:<10d} {curr_price:<10.2f} {change:<10.2f}")
         r = (name, shares, curr_price, change)
         report.append(r)
     return report
 
-if __name__ == "__main__":
-    portfolio = read_portfolio(path_portfolio)
-   
-    types = [str, float, str, str, float, float, float, float, int]
+def print_report(report):
+    '''
+    Prints report into console.
+    '''
+    headers = ('Name', 'Shares', 'Price', 'Change')
+    print('%10s %10s %10s %10s'  % headers)
+    print(('-' * 10 + ' ') * len(headers))
+    for row in report:
+        print('%10s %10d %10.2f %10.2f' % row)
 
-    f = open(r"C:\Users\David\Desktop\practical-python\Work\Data\dowstocks.csv")
+def test(types, path):
+    f = open(path)
     rows = csv.reader(f)
     header = next(rows)
     row = next(rows)
 
     converted = [func(val) for func,val in zip(types, row)]
     record = dict(zip(header, converted))
-    #record["date"] = record["date"].split('/')
-    record["date"] = tuple([int(d) for d in record["date"].split('/')])
 
-    print(record["date"])
+    record["date"] = tuple([int(d) for d in record["date"].split('/')])
+        
+def portfolio_report(portfolio_filename, prices_filename):
+    portfolio = read_portfolio(portfolio_filename)
+    prices = read_prices(prices_filename)
+    report = make_report(portfolio, prices)
+    print_report(report)
+
+if __name__ == "__main__":
+    portfolio_report(path_portfolio, path_prices)
+
+
+
+
+
+ 
