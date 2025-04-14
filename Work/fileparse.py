@@ -1,40 +1,47 @@
 # fileparse.py
-#
-# Exercise 3.3
-
 import csv
 
-def parse_csv(filename:str, select:list=['name', 'shares', 'price'], types:list = [str, int, float], has_headers:bool = True, delimiter:str = ',') -> list:
+def parse_csv(lines, select=None, types=None, has_headers=True, delimiter=',', silence_errors=False):
     '''
-    Parse a CSV file into a list of records
+    Parse a CSV file into a list of records with type conversion.
     '''
+    if select and not has_headers:
+        raise RuntimeError('select requires column headers')
 
-    with open(filename) as f:
-        rows = csv.reader(f, delimiter=delimiter)
-        if has_headers:
-            headers = next(rows)
-            if select:
-                indices = [headers.index(s) for s in select]
-            else:
-                indices = []
-        else:
-            select=[]
+    rows = csv.reader(lines, delimiter=delimiter)
 
-        records = []
-        for row in rows:
-            if not row:
+    # Read the file headers (if any)
+    headers = next(rows) if has_headers else []
+
+    # If specific columns have been selected, make indices for filtering and set output columns
+    if select:
+        indices = [ headers.index(colname) for colname in select ]
+        headers = select
+
+    records = []
+    for rowno, row in enumerate(rows, 1):
+        if not row:     # Skip rows with no data
+            continue
+
+        # If specific column indices are selected, pick them out
+        if select:
+            row = [ row[index] for index in indices]
+
+        # Apply type conversion to the row
+        if types:
+            try:
+                row = [func(val) for func, val in zip(types, row)]
+            except ValueError as e:
+                if not silence_errors:
+                    print(f"Row {rowno}: Couldn't convert {row}")
+                    print(f"Row {rowno}: Reason {e}")
                 continue
-            if has_headers:
-                row = [(row[i]) for i in indices]
-                if types:
-                    row = [func(val) for func, val in zip(types, row)]
-                    record = dict(zip(select, row))
-                    records.append(record)
-            else:
-                records.append(row)
+
+        # Make a dictionary or a tuple
+        if headers:
+            record = dict(zip(headers, row))
+        else:
+            record = tuple(row)
+        records.append(record)
+
     return records
-
-portfolio = parse_csv(r"C:\Users\David\Desktop\practical-python\Work\Data\prices.csv", types=[str,float], has_headers=False)
-print(portfolio)
-
-        

@@ -1,38 +1,20 @@
 # pcost.py
-#
-# Exercise 1.27
-import gzip
-import csv
-import sys
 
-path = r"/home/david/Desktop/practical-python/Work/Data/missing.csv"
-path2 = r"/home/david/Desktop/practical-python/Work/Data/portfolio.csv.gz"
+import Work.report_mine as report_mine
 
 def portfolio_cost(filename):
-    'Input: path to file'
-    'Output: cost of portfolio'
+    '''
+    Computes the total cost (shares*price) of a portfolio file
+    '''
+    portfolio = report_mine.read_portfolio(filename)
+    return sum([s['shares'] * s['price'] for s in portfolio])
 
-    total_cost = 0
-    f = open(filename)
-    rows = csv.reader(f)
-    header = next(rows)
+def main(args):
+    if len(args) != 2:
+        raise SystemExit('Usage: %s portfoliofile' % args[0])
+    filename = args[1]
+    print('Total cost:', portfolio_cost(filename))
 
-    for row_num, stock in enumerate(rows, start=1):
-        record = dict(zip(header, stock))
-        print(record)
-        try:
-            #stock = stock.split(',')
-            count = int(stock[1])
-            cost = float(stock[2])
-            total_cost += round(count*cost, 2)
-        except ValueError:
-            print(f"Row{row_num:>2d}: Couldn't parse {stock}")
-    return total_cost
-
-if len(sys.argv) == 2:
-    path = sys.argv[1]
-else:
-    path = 'Work/Data/portfoliodate.csv'
-    
-cost = portfolio_cost(path)
-print("Total cost: ", cost)
+if __name__ == '__main__':
+    import sys
+    main(sys.argv)
