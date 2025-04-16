@@ -14,13 +14,16 @@ def read_portfolio(filename):
     name, shares, and price.
     '''
     with open(filename) as lines:
-        return fileparse.parse_csv(lines, select=['name','shares','price'], types=[str,int,float])
-
+        portfolio = fileparse.parse_csv(lines, select=['name','shares','price'], types=[str,int,float])
+        portfolio_classes = [stock.Stock(s['name'], s['shares'], s['price']) for s in portfolio]
+        return portfolio_classes
+    
 def read_prices(filename):
     '''
     Read a CSV file of price data into a dict mapping names to prices.
     '''
     with open(filename) as lines:
+
         return dict(fileparse.parse_csv(lines, types=[str,float], has_headers=False))
 
 def make_report_data(portfolio,prices):
@@ -30,9 +33,9 @@ def make_report_data(portfolio,prices):
     '''
     rows = []
     for stock in portfolio:
-        current_price = prices[stock['name']]
-        change = current_price - stock['price']
-        summary = (stock['name'], stock['shares'], current_price, change)
+        current_price = prices[stock.name]
+        change = current_price - stock.price
+        summary = (stock.name, stock.shares, current_price, change)
         rows.append(summary)
     return rows
 
@@ -66,9 +69,4 @@ def main(args):
     portfolio_report(args[1], args[2])
 
 if __name__ == '__main__':
-    with open(r'Work/Data/portfolio.csv') as lines:
-        portdicts = fileparse.parse_csv(lines, select=['name','shares','price'], types=[str,int,float])
-
-        print(portdicts)
-        portfolio = [stock.Stock(port['name'], port['shares'], port['price']) for port in portdicts]
-        print(sum([s.cost() for s in portfolio]))
+    portfolio_report(r'Work/Data/portfolio.csv', r'Work/Data/prices.csv')

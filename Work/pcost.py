@@ -1,13 +1,13 @@
 # pcost.py
 
-import Work.report_mine as report_mine
+import Work.report as report
 
 def portfolio_cost(filename):
     '''
     Computes the total cost (shares*price) of a portfolio file
     '''
-    portfolio = report_mine.read_portfolio(filename)
-    return sum([s['shares'] * s['price'] for s in portfolio])
+    portfolio = report.read_portfolio(filename)
+    return sum([s.shares * s.price for s in portfolio])
 
 def main(args):
     if len(args) != 2:
