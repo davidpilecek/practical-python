@@ -4,11 +4,6 @@ import fileparse
 import stock 
 import tableformat
 
-a = stock.Stock("GOOG", 100, 141.2)
-b = stock.Stock("AAPL", 50, 550.1)
-s = stock.Stock('GOOG', 100, 490.10)
-c = stock.Stock("FANO", 69, 12.1)
-
 def read_portfolio(filename):
     '''
     Read a stock portfolio file into a list of dictionaries with keys
@@ -48,7 +43,6 @@ def print_report(reportdata, formatter):
     for name, shares, price, change in reportdata:
         rowdata = [ name, str(shares), f'{price:0.2f}', f'{change:0.2f}' ]
         formatter.row(rowdata)
-
 
 def portfolio_report(portfoliofile, pricefile, fmt:str):        
     '''

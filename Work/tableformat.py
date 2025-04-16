@@ -25,7 +25,7 @@ class TextTableFormatter(TableFormatter):
 
     def row(self, rowdata):
         for d in rowdata:
-            print(f'{d:>10s}', end=' ')
+            print(f'{d:>10}', end=' ')
         print()
 
 class CSVTableFormatter(TableFormatter):
@@ -55,6 +55,9 @@ class HTMLTableFormatter(TableFormatter):
         print()
 
 def create_formatter(name):
+    '''
+    Create table formatter based on user-specified input.
+    '''
     match name:
         case 'txt':
             formatter = TextTableFormatter()
@@ -66,4 +69,15 @@ def create_formatter(name):
             raise RuntimeError(f'Format {name} not defined.')
     return formatter
 
+def print_table(portfolio, attributes, formatter):
+    '''
+    Print table with specified attributes.
+    '''
+    formatter.headings(attributes)
+    for row in portfolio:
+        rowdata = [getattr(row, a) for a in attributes]
+        formatter.row(rowdata)
+
+
+    
 
