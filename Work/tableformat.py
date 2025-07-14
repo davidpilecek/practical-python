@@ -36,7 +36,7 @@ class CSVTableFormatter(TableFormatter):
         print(','.join(headers))
 
     def row(self, rowdata):
-        print(','.join(rowdata))
+        print(','.join([str(d) for d in rowdata]))
 
 class HTMLTableFormatter(TableFormatter):
     '''
@@ -54,6 +54,9 @@ class HTMLTableFormatter(TableFormatter):
             print(f'<td>{d}</td>', end='</tr>')
         print()
 
+class FormatError(Exception):
+    pass
+
 def create_formatter(name):
     '''
     Create table formatter based on user-specified input.
@@ -66,7 +69,7 @@ def create_formatter(name):
         case 'html':
             formatter = HTMLTableFormatter()
         case _:
-            raise RuntimeError(f'Format {name} not defined.')
+            raise FormatError(f'Format {name} not defined.')
     return formatter
 
 def print_table(portfolio, attributes, formatter):
@@ -79,5 +82,7 @@ def print_table(portfolio, attributes, formatter):
         formatter.row(rowdata)
 
 
-    
+if __name__ == "__main__":
+    print(globals())
+
 

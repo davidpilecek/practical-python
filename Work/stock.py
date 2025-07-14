@@ -1,24 +1,25 @@
+from typedproperty import *
 
 class Stock:
+    name = String('name')
+    shares = Integer('_shares')
+    price = Float('price')
+
     def __init__(self, name, shares, price):
         self.name = name
         self.shares = shares
         self.price = price
 
     def __repr__(self):
-        return(f'Stock({self.name:s}, {self.shares}, {self.price:.2f})')
+        return(f'Stock(\'{self.name:s}\', {self.shares}, {self.price:.2f})')
 
+    @property
     def cost(self):
-        self.stock_cost= self.shares * self.price
-        return self.stock_cost
+        return self.shares * self.price
 
     def sell(self, num):
         self.shares -= num
-        return self.shares
+
 
 if __name__ == "__main__":
-    s = Stock('GOOG', 100, 490.1)
-    columns = ['name', 'shares']
-
-    for colname in columns:
-        print(colname, '=', getattr(s, colname))
+    goog = Stock('GOOG', 99, 490.10)

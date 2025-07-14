@@ -1,18 +1,23 @@
 # report.py
 
 import fileparse
-import stock 
+from stock import Stock
 import tableformat
+from portfolio import Portfolio
 
-def read_portfolio(filename):
+def read_portfolio(filename, **opts):
     '''
     Read a stock portfolio file into a list of dictionaries with keys
     name, shares, and price.
     '''
-    with open(filename) as lines:
-        portfolio = fileparse.parse_csv(lines, select=['name','shares','price'], types=[str,int,float])
-        portfolio_classes = [stock.Stock(s['name'], s['shares'], s['price']) for s in portfolio]
-        return portfolio_classes
+    with open(filename) as file:
+        portdicts = fileparse.parse_csv(file,
+                                        select=['name', 'shares', 'price'],
+                                        types = [str, int, float],
+                                        **opts)
+        
+        portfolio = [Stock(**d) for d in portdicts]
+        return Portfolio(portfolio)
     
 def read_prices(filename):
     '''
@@ -65,4 +70,4 @@ def main(args):
     portfolio_report(args[1], args[2], args[3])
 
 if __name__ == '__main__':
-    main()
+    read_portfolio(r'Work\Data\missing.csv', silence_errors=True)

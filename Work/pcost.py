@@ -1,13 +1,13 @@
 # pcost.py
 
-import Work.report as report
+import report
 
 def portfolio_cost(filename):
     '''
     Computes the total cost (shares*price) of a portfolio file
     '''
     portfolio = report.read_portfolio(filename)
-    return sum([s.shares * s.price for s in portfolio])
+    return portfolio.total_cost
 
 def main(args):
     if len(args) != 2:
@@ -16,5 +16,4 @@ def main(args):
     print('Total cost:', portfolio_cost(filename))
 
 if __name__ == '__main__':
-    import sys
-    main(sys.argv)
+    print('Total cost:', portfolio_cost(r'Work\Data\portfolio.csv'))
